@@ -7,14 +7,14 @@ public class main {
         File f_b = new File("b.txt");
         File f_c = new File("c.txt");
         File f_d = new File("d.txt");
-        File f_a_d = new File("a.txt");
         root.addFileSystem(f_c);
         a.addFileSystem(f_a);
         root.addFileSystem(f_d);
         a.addFileSystem(f_b);
         root.addFileSystem(a);
-        a.addFileSystem(f_a_d);
+        root.addFileSystem("root/A/f_a_d.txt", 0);
+        root.addFileSystem("root/g.txt", 0);
         System.out.println(root);
-        System.out.println(a);
+        System.out.println(root.search("a.txt"));
     }
 }

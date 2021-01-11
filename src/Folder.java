@@ -20,12 +20,39 @@ public class Folder extends FileSystem {
         return index_to_insert;
     }
 
+    private Folder getDirectoryFromPath(String[] path, int index) {
+        if(index >= path.length) return null;
+        if(!path[index].equals(this.getName())) return null;
+        if(index == path.length-2) return this;
+        for(FileSystem subFile : subFiles) {
+            if(subFile instanceof Folder) {
+                return ((Folder) subFile).getDirectoryFromPath(path, index + 1);
+            }
+        }
+        return null;
+    }
+
     public void addFileSystem(FileSystem to_insert) {
         int index_to_insert = findIndexToInsertTo(to_insert.getName());
         subFiles.add(index_to_insert, to_insert);
     }
 
-    public void deleteFileSystem(String name) {
+    public void addFileSystem(String path, int type) {
+        if(type != 0 && type != 1) throw new IllegalArgumentException("Type should be 0 (File) or 1 (Folder)");
+        String[] sub_paths = path.split("/");
+        String name = sub_paths[sub_paths.length - 1];
+        Folder folder = getDirectoryFromPath(sub_paths, 0);
+        System.out.println("FOUND: " + folder.getName());
+        if(folder == null) throw new RuntimeException("Folder does not exists!");
+        int index_to_insert = folder.findIndexToInsertTo(name);
+        if(type == 0) {
+            folder.subFiles.add(index_to_insert, new File(name));
+        } else {
+            folder.subFiles.add(index_to_insert, new Folder(name));
+        }
+    }
+
+    public void deleteFileSystem(String path) {
 
     }
 
@@ -46,11 +73,28 @@ public class Folder extends FileSystem {
         return this.toStringHelper("");
     }
 
-    private String searchHelper(String path) {
-        return "";
+    private void searchHelper(ArrayList<String> paths, String path, String name) {
+        if(this.getName().equals(name)) {
+            paths.add(path);
+        }
+        for(FileSystem subFile : subFiles) {
+            if(subFile instanceof Folder) {
+                ((Folder)subFile).searchHelper(paths, path + "/" + subFile.getName(), name);
+            } else {
+                if(subFile.getName().equals(name)) {
+                    paths.add(path);
+                }
+            }
+        }
     }
 
-    public String search() {
-        return searchHelper("");
+    public String search(String name) {
+        StringBuilder output = new StringBuilder();
+        ArrayList<String> paths = new ArrayList<String>();
+        searchHelper(paths, this.getName(), name);
+        for(String path : paths) {
+            output.append(path).append("\n");
+        }
+        return output.toString();
     }
 }
