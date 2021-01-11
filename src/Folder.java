@@ -26,7 +26,10 @@ public class Folder extends FileSystem {
         if(index == path.length-2) return this;
         for(FileSystem subFile : subFiles) {
             if(subFile instanceof Folder) {
-                return ((Folder) subFile).getDirectoryFromPath(path, index + 1);
+                Folder temp = ((Folder) subFile).getDirectoryFromPath(path, index + 1);
+                if(temp != null) {
+                    return temp;
+                }
             }
         }
         return null;
@@ -42,7 +45,6 @@ public class Folder extends FileSystem {
         String[] sub_paths = path.split("/");
         String name = sub_paths[sub_paths.length - 1];
         Folder folder = getDirectoryFromPath(sub_paths, 0);
-        System.out.println("FOUND: " + folder.getName());
         if(folder == null) throw new RuntimeException("Folder does not exists!");
         int index_to_insert = folder.findIndexToInsertTo(name);
         if(type == 0) {
@@ -53,7 +55,19 @@ public class Folder extends FileSystem {
     }
 
     public void deleteFileSystem(String path) {
-
+        String[] sub_paths = path.split("/");
+        String name = sub_paths[sub_paths.length - 1];
+        Folder folder = getDirectoryFromPath(sub_paths, 0);
+        if(folder == null) throw new RuntimeException("Folder does not exists!");
+        FileSystem to_delete = null;
+        for(FileSystem subFile : folder.subFiles) {
+            if(subFile.getName().equals(name)) {
+                to_delete = subFile;
+                break;
+            }
+        }
+        if(to_delete == null) throw new RuntimeException("File or folder doesnt exists!");
+        folder.subFiles.remove(to_delete);
     }
 
     private String toStringHelper(String spaces) {
