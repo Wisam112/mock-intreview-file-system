@@ -6,7 +6,6 @@ public abstract class FileSystem {
     /**
      * Class constructor.
      * @param  name the name of the file system
-     * @return      an object of type FileSystem
      */
     public FileSystem(String name) {
         if(name == null || name.length() == 0) throw new IllegalArgumentException("File name cant be null or empty!");

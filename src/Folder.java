@@ -6,7 +6,6 @@ public class Folder extends FileSystem {
     /**
      * Folder class constructor
      * @param  name the name of the folder
-     * @return      an object of type folder
      */
     public Folder(String name) {
         super(name);

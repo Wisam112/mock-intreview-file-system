@@ -3,7 +3,6 @@ public class File extends FileSystem {
     /**
      * File class constructor
      * @param  name the name of the file
-     * @return      an object of type File
      */
     public File(String name) {
         super(name);
